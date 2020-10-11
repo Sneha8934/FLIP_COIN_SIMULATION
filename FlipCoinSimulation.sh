@@ -3,13 +3,13 @@
 echo "------Welcome To Flip Coin Simulation------"
 
 isHEAD=0
-NUMBER_OF_COIN=2
+NUMBER_OF_COIN=3
 
-declare -A singletFlip
+declare -A tripletFlip
 read -p "Enter the Number of Coin Flip : " numberOfCoinFlip
 
 #TO FUNCTION DOUBLET
-function doublet()
+function triplet()
 {
    for(( count=0; count<$numberOfCoinFlip; count++ ))
    do
@@ -24,19 +24,19 @@ function doublet()
             coinSide+=T
          fi
 		done
-		((doubletFlip[$coinSide]++))
+		((tripletFlip[$coinSide]++))
 		coinSide=""
 	done
 
-#TO TOTAL PERCENTAGE OF DOUBLET COMBINATION
-function totalDoubletPercentage()
+#TO TOTAL PERCENTAGE OF TRIPLET COMBINATION
+function totalTripletPercentage()
 {
-   for index in ${!doubletFlip[@]}
+   for index in ${!tripletFlip[@]}
    do
-      doubletFlip[$index]=`echo "scale=2; ${doubletFlip[$index]} * 100 / $numberOfCoinFlip" | bc`
+      tripletFlip[$index]=`echo "scale=2; ${tripletFlip[$index]} * 100 / $numberOfCoinFlip" | bc`
    done
 
 }
 
-doublet
-totalDoubletPercentage
+triplet
+totalTripletPercentage
