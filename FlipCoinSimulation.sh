@@ -2,41 +2,54 @@
 
 echo "------Welcome To Flip Coin Simulation------"
 
-isHEAD=0
-NUMBER_OF_COIN=3
+declare -A flipStore
+isFlip=0
+maximum=0
+temp=0
 
-declare -A tripletFlip
-read -p "Enter the Number of Coin Flip : " numberOfCoinFlip
-
-#TO FUNCTION DOUBLET
-function triplet()
+#TO FUNCTION TO FIND HEAD AND TAIL COMBINATION
+function totalFlip()
 {
-   for(( count=0; count<$numberOfCoinFlip; count++ ))
-   do
-      for(( countCoin=0; countCoin<$NUMBER_OF_COIN; countCoin++ ))
-      do
-         flipCoin=$(( RANDOM % 2 ))
-
-         if [ $FlipCoin -eq $isHEAD ]
-         then
-            coinSide+=H
-         else
-            coinSide+=T
-         fi
+	for((index=0; index<$1; index++))
+	do
+		side=""
+		for((indexOne=0; indexOne<$2; indexOne++))
+		do
+			#GENERATE RANDOM NUMBER
+			flipCoin=$((RANDOM%2))
+			if [ $flipCoin -eq $isFlip ]
+			then
+				side+=H
+			else
+				side+=T
+			fi
 		done
-		((tripletFlip[$coinSide]++))
-		coinSide=""
+		flipStore[$side]=$((${flipStore[$side]}+1))
 	done
-
-#TO TOTAL PERCENTAGE OF TRIPLET COMBINATION
-function totalTripletPercentage()
-{
-   for index in ${!tripletFlip[@]}
-   do
-      tripletFlip[$index]=`echo "scale=2; ${tripletFlip[$index]} * 100 / $numberOfCoinFlip" | bc`
-   done
-
+	echo "Count of all combination     :${flipStore[@]}"
 }
 
-triplet
-totalTripletPercentage
+
+#FUNCTION TO FIND PERCENTAGE AND ALSO FIND MAXIMUM HEAD OR TAIL WINNING COMBINANTION
+function totalPercentageFlip()
+{
+	for count in ${!flipStore[@]}
+	{
+		flipStore[$count]=`echo "scale=2; $((${flipStore[$count]}))/$times*100 " | bc`
+		temp=${flipStore[$count]}
+		if (( $(echo "$temp >= $maximum"| bc) ))
+		then
+			maximum=$temp
+			key=$count
+		fi
+	}
+}
+
+#CHECKING HEADS OR TAILS
+read -p "Enter number of times you want to flip:" times
+read -p "Enter choice 1)Singlet 2)Doublet 3)Triplet and so on:" coins
+totalFlip $times $coins
+totalPercentageFlip
+echo "All head and tail combination:${!flipStore[@]}"
+echo "percentage of all combination:${flipStore[@]}"
+echo "Max winning combination      :" $maximum "-" $key
